@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 # JOBTrackerANDmore
 This is a web application designed to help track job applications, manage a professional profile, analyze job descriptions using AI, and generate a basic resume structure.
 =======
@@ -7,6 +8,9 @@ This is a web application designed to help track job applications, manage a prof
 =======
 # Sentrie.job Project (Working Title)
 >>>>>>> fd5851f (Prototype + Gemini)
+=======
+# Sentrie - JOB Tracker + more
+>>>>>>> 65740f9 (Update README.md)
 
 ## Overview
 
@@ -46,7 +50,10 @@ A web application to track job applications. Built with Flask and React.
 <<<<<<< HEAD
 * Add deployment guidelines.
 * Flesh out Phase 1-5 features according to the roadmap.
+<<<<<<< HEAD
 >>>>>>> 1bc455c (Initial project setup (Phase 0 complete with MariaDB))
 =======
 * Add deployment guidelines.
 >>>>>>> fd5851f (Prototype + Gemini)
+=======
+>>>>>>> 65740f9 (Update README.md)
