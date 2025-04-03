@@ -22,6 +22,7 @@ A web application to track job applications. Built with Flask and React.
 * **Frontend:** React, Vite, Axios
 * **Database:** MariaDB
 
+<<<<<<< HEAD
 ## Setup (Initial - Phase 0)
 
 *See detailed steps below or in project documentation.*
@@ -36,6 +37,11 @@ A web application to track job applications. Built with Flask and React.
 8.  Initialize database migrations: `cd backend && flask db init` (if first time)
 9.  Run initial migration: `flask db migrate -m "Initial schema"`
 10. Apply migrations: `flask db upgrade`
+=======
+**1. Prerequisites:**
+
+* Install Git, Python 3, Node.js (npm), MariaDB Server. Ensure they are in your system PATH.
+>>>>>>> d620fdb (Update README.md)
 
 ## Running the App
 
