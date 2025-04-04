@@ -1,8 +1,23 @@
+# Core Flask framework
 Flask
+
+# Database ORM and migration tools
 Flask-SQLAlchemy
 Flask-Migrate
-PyMySQL
+PyMySQL          # Driver for MariaDB/MySQL
+
+# Configuration management
 python-dotenv
+
+# Serialization/Deserialization (for API request/response handling)
 marshmallow
-marshmallow-sqlalchemy
+marshmallow-sqlalchemy # Integrates Marshmallow with SQLAlchemy models
+
+# Cross-Origin Resource Sharing (for frontend communication)
 Flask-Cors
+
+# --- Added for Phase 3 ---
+google-generativeai
+
+# NOTE: Remember to freeze specific versions after installing:
+# pip freeze > requirements.txt

@@ -1,26 +1,93 @@
-# Python Virtual Environment
-backend/venv/
-venv/
-*.pyc
-__pycache__/
-.env
-instance/
+# .gitignore file specifies intentionally untracked files that Git should ignore.
+# Files already tracked by Git are not affected.
 
-# Node Dependencies
-frontend/node_modules/
+# --- Python/Flask Specific ---
+# Ignore the virtual environment directory
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+instance/
+.webassets-cache/
+
+# --- Database Files ---
+# Ignore SQLite databases if used locally (we use MariaDB, but good practice)
+*.sqlite3
+*.db
+
+# --- Frontend / Node.js / Vite Specific ---
+# Dependencies
 node_modules/
+
+# Build output
+dist/
+build/
+*.local
+
+# Logs
+logs/
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-# package-lock.json # Decide whether to track or ignore
-build/
-dist/
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS Files
+# Vite specific cache/build files
+.vite/
+*.html.vite*
+
+# --- Testing & Coverage ---
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+
+# --- OS generated files ---
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+# Thumbnails
+._*
+# Windows
 Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+desktop.ini
 
-# IDE specific
+# --- IDEs and Editors ---
+# JetBrains IDEs (PyCharm, WebStorm, etc.)
 .idea/
+# VS Code
 .vscode/
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+# Vim
 *.swp
+*~
+# Other
+*.tmp
+*.bak
+*.orig
+
+# --- Sensitive files (CRITICAL TO IGNORE) ---
+# Environment variables
+.env
+*.env.*
+# Important: Add exceptions for template/example files if needed!
+!*.env.example
+!*.env.template
+
+# Secrets (if stored separately - .env is preferred)
+secrets.*
+*.secret
+*.key
+*.pem
+
+# --- Add any other project-specific files below ---

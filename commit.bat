@@ -1,47 +1,57 @@
 @echo off
-echo ================================================
-echo  Sentrie.job Git Sync Script
-echo ================================================
+REM Batch script to stage ALL changes (modified, deleted, new) and commit them.
+REM WARNING: Uses 'git add .' which stages EVERYTHING in the current directory.
+REM          Make sure untracked files are intended for commit or add them to .gitignore first!
+REM          Run this script from the root of your Git repository.
+
+echo ========== Current Git Status ==========
+git status
+echo ========================================
 echo.
+echo This script will stage ALL the changes listed above (modified, deleted, and NEW files).
+pause REM Press any key to continue, or Ctrl+C to abort.
 
-REM Ensure we are in the correct directory (where the script lives)
-cd /d "%~dp0"
-
-REM Check if it's a git repository
-IF NOT EXIST ".git" (
-    echo [ERROR] This does not appear to be a Git repository. (.git folder not found)
-    goto End
-)
-
-echo [INFO] Staging all changes (git add .)...
+echo.
+echo Staging all changes (git add .)...
 git add .
-echo.
-
-REM Check if there are changes to commit
-git diff --staged --quiet
-IF ERRORLEVEL 1 (
-    echo [INFO] Creating automated commit...
-    REM Using a generic commit message with date and time
-    git commit -m "Automated commit by script [%date% %time%]"
-    echo.
-
-    echo [INFO] Pushing changes to GitHub (origin main)...
-    git push origin main
-    IF ERRORLEVEL 1 (
-        echo [ERROR] 'git push' failed. Check connection or authentication.
-    ) ELSE (
-        echo [SUCCESS] Changes pushed successfully.
-    )
-) ELSE (
-    echo [INFO] No changes staged to commit. Working tree clean?
+IF %ERRORLEVEL% NEQ 0 (
+    echo ERROR: Failed to stage changes. Aborting.
+    pause
+    exit /b %ERRORLEVEL%
 )
 
 echo.
-echo ================================================
-echo  Sync script finished.
-echo ================================================
+echo ========== Status After Staging ==========
+REM Show status again so user sees what WILL be committed
+git status
+echo =========================================
 echo.
 
-:End
-pause
-exit /b
+REM Prompt for commit message
+set /p commitMessage="Enter commit message: "
+
+REM Check if commit message is empty (basic check)
+if "%commitMessage%"=="" (
+    echo ERROR: Commit message cannot be empty. Aborting commit.
+    echo You may need to run 'git commit' manually or re-run this script.
+    pause
+    exit /b 1
+)
+
+echo.
+echo Committing staged changes...
+git commit -m "%commitMessage%"
+IF %ERRORLEVEL% NEQ 0 (
+    echo ERROR: Failed to commit changes. Check Git output above.
+    pause
+    exit /b %ERRORLEVEL%
+)
+
+echo.
+echo ========== Final Git Status ==========
+git status
+echo =====================================
+echo.
+echo Script finished.
+pause REM Keep window open to see output
+exit /b 0

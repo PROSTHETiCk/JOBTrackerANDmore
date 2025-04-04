@@ -1,64 +1,115 @@
 import os
 import sys
 from logging.config import fileConfig
-import sqlalchemy
+
+from flask import current_app
+from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from sqlalchemy.engine import URL
+from sqlalchemy.engine import URL # For parsing URL if needed
+
 from alembic import context
 
-config = context.config
-
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
-
-target_metadata = None
-flask_app = None
-db_url_obj = None
-
-migrations_dir = os.path.dirname(__file__)
-project_root = os.path.abspath(os.path.join(migrations_dir, '..'))
-backend_dir = os.path.join(project_root, 'backend')
+# Ensure the backend directory is in the Python path
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend'))
 if backend_dir not in sys.path:
     sys.path.insert(0, backend_dir)
 
+# this is the Alembic Config object, which provides
+# access to the values within the .ini file in use.
+config = context.config
+
+# Interpret the config file for Python logging.
+# This line sets up loggers basically.
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# Add your model's MetaData object here
+# for 'autogenerate' support.
+# from myapp import mymodel
+# target_metadata = mymodel.Base.metadata
+# target_metadata = None # Default if not using autogenerate initially
+
+# Try to load metadata from the Flask app context
+target_metadata = None
+db_url_str = None
 try:
+    # Adjust import if your factory is named differently or located elsewhere
     from app import create_app, db
-    flask_app = create_app()
-    with flask_app.app_context():
+    flask_app = create_app() # Create an app instance
+    with flask_app.app_context(): # Use the app context
         target_metadata = db.metadata
-        db_url_str = flask_app.config.get('SQLALCHEMY_DATABASE_URI')
-        if db_url_str:
-             db_url_obj = URL.create(db_url_str)
+        # Get URL from Flask app config if possible
+        db_url_str = current_app.config.get('SQLALCHEMY_DATABASE_URI')
+except ImportError as ie:
+     print(f"[WARN][env.py] Could not import Flask app or db: {ie}. Autogenerate might need manual metadata setup.")
 except Exception as e:
-    print(f"[WARN][env.py] Could not import Flask app context: {e}")
-    pass
+     print(f"[WARN][env.py] Error getting metadata/URL from Flask app context: {e}")
 
-def run_migrations_offline():
-    if target_metadata is None:
-         raise RuntimeError("target_metadata required for offline mode.")
 
-    url = db_url_obj
+# other values from the config, defined by the needs of env.py,
+# can be acquired:
+# my_important_option = config.get_main_option("my_important_option")
+# ... etc.
+
+
+def run_migrations_offline() -> None:
+    """Run migrations in 'offline' mode.
+
+    This configures the context with just a URL
+    and not an Engine, though an Engine is acceptable
+    here as well. By skipping the Engine creation
+    we don't even need a DBAPI to be available.
+
+    Calls to context.execute() here emit the given string to the
+    script output.
+
+    """
+    # Use URL from Flask app if available, otherwise fallback to alembic.ini
+    url = db_url_str or config.get_main_option("sqlalchemy.url")
     if not url:
-        try:
-            url_str = config.get_main_option("sqlalchemy.url")
-            if url_str: url = URL.create(url_str)
-        except Exception: pass
-    if not url: raise ValueError("Database URL not found.")
+        raise ValueError("Database URL not found in Flask config or alembic.ini")
 
-    context.configure(url=url, target_metadata=target_metadata, literal_binds=True, dialect_opts={"paramstyle": "named"})
-    with context.begin_transaction(): context.run_migrations()
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True, # Useful for generating SQL scripts
+        dialect_opts={"paramstyle": "named"},
+    )
 
-def run_migrations_online():
-    if not flask_app: raise RuntimeError("Flask app required for online migration.")
-    if target_metadata is None: raise RuntimeError("target_metadata required.")
+    with context.begin_transaction():
+        context.run_migrations()
 
-    db_url = flask_app.config.get('SQLALCHEMY_DATABASE_URI')
-    if not db_url: raise ValueError("SQLALCHEMY_DATABASE_URI not set.")
 
-    connectable = sqlalchemy.create_engine(db_url, poolclass=pool.NullPool)
+def run_migrations_online() -> None:
+    """Run migrations in 'online' mode.
+
+    In this scenario we need to create an Engine
+    and associate a connection with the context.
+
+    """
+     # Use URL from Flask app if available, otherwise fallback to alembic.ini
+    effective_url = db_url_str or config.get_main_option("sqlalchemy.url")
+    if not effective_url:
+        raise ValueError("Database URL not found in Flask config or alembic.ini")
+
+    # Create engine configuration based on effective URL
+    engine_config = config.get_section(config.config_ini_section) or {}
+    engine_config["sqlalchemy.url"] = effective_url # Ensure the URL is set
+
+    connectable = engine_from_config(
+        engine_config,
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
+
     with connectable.connect() as connection:
-        context.configure(connection=connection, target_metadata=target_metadata)
-        with context.begin_transaction(): context.run_migrations()
+        context.configure(
+            connection=connection, target_metadata=target_metadata
+        )
+
+        with context.begin_transaction():
+            context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()

@@ -1,0 +1,236 @@
+/* === Global Styles & Variables === */
+:root {
+  /* --- Light Mode Colors (Default) --- */
+  --bg-image: linear-gradient(to bottom right, #e9f0fa, #dde6f0); /* Slightly adjusted */
+  --content-bg-rgb: 255, 255, 255;
+  --content-solid-bg: #ffffff;
+  --text-color: #1c1c1e; /* Slightly adjusted dark text */
+  --text-muted: #666666;
+  --text-muted-rgb: 102, 102, 102;
+  --border-color-rgb: 218, 220, 224; /* Slightly adjusted */
+  --border-color: rgba(var(--border-color-rgb), 0.5);
+  --input-bg: rgba(255, 255, 255, 0.8);
+  --input-border: rgba(var(--border-color-rgb), 0.7); /* Slightly less transparent */
+  --primary-color-rgb: 13, 110, 253;
+  --primary-color: rgb(var(--primary-color-rgb));
+  --primary-hover: #0b5ed7; /* Adjusted hover */
+  --danger-color: #dc3545;
+  --danger-hover: #bb2d3b;
+  --warning-color: #ffc107;
+  --warning-hover: #ffca2c; /* Adjusted hover */
+  --shadow-color: rgba(0, 0, 0, 0.08); /* Adjusted shadow */
+  --shadow-highlight: rgba(255, 255, 255, 0.6);
+
+  /* Layout & Spacing */
+  --gap-xs: 0.25rem; --gap-sm: 0.5rem; --gap-md: 1rem; --gap-lg: 1.5rem; --gap-xl: 2rem;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+
+  /* Animation */
+  --transition-speed: 0.2s; /* Slightly faster */
+  --transition-ease: ease-out; /* Common ease function */
+
+  /* Base Font */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Reverted to system stack */
+  line-height: 1.6; font-weight: 400; font-synthesis: none; text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  color-scheme: light; color: var(--text-color);
+}
+
+/* --- Dark Mode Overrides --- */
+body.dark-mode {
+  --bg-image: linear-gradient(to bottom right, #22272e, #1c1f24); /* Adjusted dark gradient */
+  --content-bg-rgb: 45, 51, 59; /* Adjusted dark content */
+  --content-solid-bg: #2d333b;
+  --text-color: #c9d1d9; /* GitHub dark mode text */
+  --text-muted: #8b949e;
+  --text-muted-rgb: 139, 148, 158;
+  --border-color-rgb: 72, 79, 88;
+  --border-color: rgba(var(--border-color-rgb), 0.5);
+  --input-bg: rgba(34, 39, 46, 0.8); /* Dark input */
+  --input-border: rgba(var(--border-color-rgb), 0.7);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --shadow-highlight: rgba(255, 255, 255, 0.08);
+  /* --primary-color-rgb: 80, 150, 255; */
+  color-scheme: dark;
+}
+
+/* Basic Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-image: var(--bg-image); background-attachment: fixed;
+  color: var(--text-color); display: flex; justify-content: center;
+  min-height: 100vh; padding: var(--gap-lg);
+  transition: background-color var(--transition-speed) var(--transition-ease), color var(--transition-speed) var(--transition-ease);
+}
+body.dark-mode { /* Apply dark vars */ }
+
+#root { width: 100%; max-width: 1100px; }
+
+/* === App Layout === */
+.App { display: flex; flex-direction: column; gap: var(--gap-lg); }
+
+.App-header {
+  background-color: rgba(var(--content-bg-rgb), 0.7); /* Slightly less transparent */
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* Less blur */
+  border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: var(--gap-md) var(--gap-lg);
+  box-shadow: 0 2px 5px var(--shadow-color), inset 0 1px 0 var(--shadow-highlight);
+  transition: background-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease), border-color var(--transition-speed) var(--transition-ease);
+}
+.App-header h1 { color: var(--text-color); font-size: 1.8em; font-weight: 600; margin: 0; }
+/* Ensure header internal div uses flex and gap */
+.App-header > div { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--gap-md); }
+.App-header nav { display: flex; gap: var(--gap-sm); flex-wrap: wrap; }
+/* Remove blur from nav buttons if it causes issues */
+/* .App-header nav button { backdrop-filter: none; } */
+
+main {
+  background-color: rgba(var(--content-bg-rgb), 0.6); /* Adjusted */
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); /* Adjusted */
+  border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: var(--gap-lg); box-shadow: 0 6px 24px var(--shadow-color), inset 0 1px 1px var(--shadow-highlight); /* Adjusted */
+  display: flex; flex-direction: column; gap: var(--gap-lg);
+  transition: background-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease), border-color var(--transition-speed) var(--transition-ease);
+}
+
+/* Ensure sections inside main have consistent spacing */
+main > section {
+   padding-top: var(--gap-sm); /* Add some top padding to sections */
+}
+
+hr { border: none; border-top: 1px solid var(--border-color); margin: var(--gap-lg) 0; /* Increase HR margin */ }
+
+/* === General Elements === */
+h2 { color: var(--text-color); font-size: 1.5em; margin-bottom: var(--gap-md); padding-bottom: var(--gap-sm); border-bottom: 1px solid var(--border-color); font-weight: 600; }
+a { color: var(--primary-color); text-decoration: none; transition: color 0.2s ease; }
+a:hover { color: var(--primary-hover); text-decoration: underline; }
+
+/* === Button Styles (Re-verified) === */
+button {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0.6em 1.2em; font-size: 0.95em; font-weight: 500;
+  font-family: inherit; border-radius: var(--radius-md);
+  border: 1px solid transparent; cursor: pointer;
+  transition: all var(--transition-speed) var(--transition-ease);
+  box-shadow: 0 1px 2px var(--shadow-color);
+  transform: perspective(1px) translateZ(0);
+  /* Default Button Appearance (Primary) */
+  background-color: var(--primary-color);
+  color: #fff;
+  line-height: normal; /* Reset line-height */
+}
+button:hover:not(:disabled) {
+  box-shadow: 0 4px 8px var(--shadow-color);
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.1);
+}
+button:active:not(:disabled) {
+  transform: translateY(0) scale(1);
+  box-shadow: 0 1px 2px var(--shadow-color);
+  filter: brightness(0.95);
+}
+button:disabled {
+  background-color: var(--text-muted); color: var(--bg-color);
+  cursor: not-allowed; opacity: 0.6; box-shadow: none; transform: none; filter: none;
+}
+
+/* Specific Button Type Styles */
+button.btn-delete { background-color: var(--danger-color); color: #fff; }
+button.btn-delete:hover:not(:disabled) { background-color: var(--danger-hover); filter: brightness(1.1); }
+
+button.btn-edit { background-color: var(--warning-color); color: #212529; }
+button.btn-edit:hover:not(:disabled) { background-color: var(--warning-hover); filter: brightness(1.1); }
+
+button.btn-secondary {
+  background-color: rgba(var(--text-muted-rgb), 0.15);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+body.dark-mode button.btn-secondary {
+  background-color: rgba(var(--text-muted-rgb), 0.2);
+  border-color: rgba(var(--border-color-rgb), 0.7);
+}
+button.btn-secondary:hover:not(:disabled) {
+  background-color: rgba(var(--text-muted-rgb), 0.25);
+  border-color: rgba(var(--border-color-rgb), 0.8);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+body.dark-mode button.btn-secondary:hover:not(:disabled) {
+   background-color: rgba(var(--text-muted-rgb), 0.3);
+   border-color: rgba(var(--border-color-rgb), 1);
+}
+
+
+/* === Form Styles === */
+.add-job-form, .job-detail form, .user-profile-page form, .job-analyzer {
+  display: flex; flex-direction: column; gap: var(--gap-md);
+}
+label {
+  display: block; margin-bottom: var(--gap-xs); /* Smaller gap below label */
+  font-weight: 500; font-size: 0.9em; color: var(--text-color);
+}
+
+/* Combined rule for all form inputs */
+input[type="text"],
+input[type="url"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  box-sizing: border-box; /* Ensure correct box model */
+  width: 100%;            /* Ensure full width */
+  display: block;
+  padding: 0.7em 1em;
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-color);
+  border-radius: var(--radius-md);
+  font-size: 1em;
+  font-family: inherit;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075);
+  transition: border-color var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease);
+  min-height: calc(0.7em * 2 + 1em * 1.6 + 2px); /* Ensure minimum height matches padding/line-height roughly */
+}
+
+/* Specific rule for TEXTAREA */
+textarea {
+  line-height: 1.5;
+  resize: none;
+}
+
+/* Focus Styles */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.075), 0 0 0 3px rgba(var(--primary-color-rgb), 0.25);
+}
+
+.form-actions { display: flex; gap: var(--gap-md); margin-top: var(--gap-sm); }
+.form-message { /* ... */ }
+/* ... (Form message styles remain the same) ... */
+
+/* === Job List Styles === */
+.job-list ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--gap-md); }
+.job-list-item {
+   background-color: rgba(var(--content-bg-rgb), 0.7);
+   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+   padding: var(--gap-md); border-radius: var(--radius-md);
+   box-shadow: 0 2px 4px var(--shadow-color), inset 0 1px 0px var(--shadow-highlight);
+   border: 1px solid var(--border-color);
+   transition: transform var(--transition-speed) var(--transition-ease), box-shadow var(--transition-speed) var(--transition-ease), background-color var(--transition-speed) var(--transition-ease);
+}
+.job-list-item:hover { /* ... */ }
+.job-list-item h3 { /* ... */ } .job-list-item p { /* ... */ } .job-list-item p strong { /* ... */ }
+.job-actions { /* ... */ }
+
+/* === Job Detail / Profile Display / Resume / Analyzer Result Styles === */
+/* ... (Display styles remain the same) ... */
+
+pre.display-box {
+  /* ... (Existing styles, ensure wrapping) ... */
+  white-space: pre-wrap; word-wrap: break-word;
+}
+/* ... (Dark mode display box, loading/empty states remain the same) ... */
